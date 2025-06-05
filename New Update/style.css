@@ -1,0 +1,167 @@
+/* style.css FINAL (desktop-only) */
+
+:root {
+  --bg-dark: #0d1117;
+  --text-dark: #c9d1d9;
+  --card-dark: #161b22;
+  --border-dark: #30363d;
+  --accent-green: #238636;
+  --accent-blue: #1f6feb;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.sidebar {
+  background-color: var(--card-dark);
+  padding: 20px;
+  border-radius: 12px;
+  width: 300px;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.dashboard-content {
+  flex-grow: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.card {
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  background-color: var(--card-dark);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.winrate-card {
+  background-color: var(--accent-blue);
+  color: white;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+form input,
+form select,
+form button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-dark);
+  background-color: #0d1117;
+  color: var(--text-dark);
+}
+
+form button {
+  background-color: var(--accent-green);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #2ea043;
+}
+
+.bot-control {
+  margin-top: 10px;
+}
+
+.bot-control button {
+  width: 48%;
+  margin: 5px 1%;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: var(--accent-blue);
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.bot-control button:hover {
+  background-color: #388bfd;
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.status {
+  font-weight: bold;
+  margin-top: 6px;
+  color: #ccc;
+}
+
+.ip-info {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #999;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--card-dark);
+  border: 1px solid var(--border-dark);
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-dark);
+  color: var(--text-dark);
+}
+
+th {
+  background-color: #1f2933;
+  text-transform: uppercase;
+}
+
+tr:hover {
+  background-color: #1a1f25;
+}
+
+.signal-buy {
+  background-color: #033a1a;
+  color: #70ffb3;
+  font-weight: bold;
+}
+
+.signal-sell {
+  background-color: #3a0303;
+  color: #ffb3b3;
+  font-weight: bold;
+}

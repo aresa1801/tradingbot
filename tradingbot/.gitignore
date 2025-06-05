@@ -1,0 +1,22 @@
+# JANGAN upload private key
+*.key
+*.pem
+*.pub
+*.env
+*.log
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn.lock
+package-lock.json
+
+# Lokasi penyimpanan sementara
+logs/
+tmp/
+cache/
+
+# File sensitif
+data/credentials.json
+.env

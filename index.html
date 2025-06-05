@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📈 Trading Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
+  <main>
+    <aside class="sidebar">
+      <label for="lang-toggle">🌐 Language:</label>
+      <select id="lang-toggle">
+        <option value="en" selected>🇬🇧 English</option>
+        <option value="id">🇮🇩 Indonesia</option>
+      </select>
+
+      <h2 id="label-exchange">🔐 Exchange Info</h2>
+      <form id="credentials-form">
+        <label id="label-select">Select Exchange:
+          <select id="exchange">
+            <option value="indodax">Indodax</option>
+          </select>
+        </label><br><br>
+
+        <label id="label-api">API Key:
+          <input type="text" id="apiKey" required>
+        </label><br><br>
+
+        <label id="label-secret">Secret Key:
+          <input type="password" id="secretKey" required>
+        </label><br><br>
+
+        <label id="label-trade">IDR per Trade:
+          <input type="number" id="tradeAmount" value="100000" min="10000">
+        </label><br><br>
+
+        <button type="submit" id="connectBtn">Connect</button>
+        <button type="button" id="logoutBtn">🔓 Logout</button>
+        <p><span id="connect-status">Status: </span></p>
+      </form>
+
+      <hr>
+      <h3 lang="order">🛒 Manual Order</h3>
+      <div class="form-group">
+        <label for="symbol" id="label-symbol">Symbol:</label>
+        <input type="text" id="symbol" placeholder="e.g. BTC/IDR" />
+      </div>
+
+      <div class="form-group">
+        <label for="side" id="label-side">Side:</label>
+        <select id="side">
+          <option value="buy">BUY</option>
+          <option value="sell">SELL</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="orderAmount" id="label-amount">Amount:</label>
+        <input type="number" id="orderAmount" step="0.0001" placeholder="e.g. 0.001" />
+      </div>
+
+      <button id="sendOrderBtn" type="button">Execute Order</button>
+
+      <hr>
+      <h3 lang="bot">🤖 Bot Control</h3>
+      <div class="bot-control">
+        <button type="button" id="startBotBtn">▶️ Start Bot</button>
+        <button type="button" id="stopBotBtn">⏹ Stop Bot</button>
+        <p><span id="status-label">Status:</span> <span id="botStatus">Loading...</span></p>
+      </div>
+
+      <div class="ip-info">
+        <h3 id="label-ip">🌐 Current IP</h3>
+        <p id="current-ip">Loading...</p>
+      </div>
+    </aside>
+
+    <section class="dashboard-content">
+      <h1 id="label-title">📈 Trading Dashboard</h1>
+      <div class="grid">
+        <div class="card"><h3 id="label-balance">Balance</h3><p id="balance">Loading...</p></div>
+        <div class="card"><h3 id="label-daily">Weekly Profit</h3><p id="daily">Loading...</p></div>
+        <div class="card"><h3 id="label-weekly">Monthly Profit</h3><p id="weekly">Loading...</p></div>
+        <div class="card winrate-card"><h3 id="label-winrate">Winrate</h3><p id="winrate">Loading...</p></div>
+      </div>
+
+      <h2 id="label-history">📋 Transaction History</h2>
+      <div class="tab-container">
+        <button class="tab-btn active" onclick="switchTab('executed')">Executed</button>
+        <button class="tab-btn" onclick="switchTab('signal-only')">Signal Only</button>
+      </div>
+      <table id="trade-table">
+        <thead>
+          <tr>
+            <th id="th-no">No</th>
+            <th id="th-signal">Signal</th>
+            <th id="th-status">Status</th>
+            <th id="th-price">Price</th>
+            <th id="th-amount">Amount</th>
+            <th id="th-profit">Profit</th>
+            <th id="th-time">Time</th>
+          </tr>
+        </thead>
+        <tbody id="trade-table-body"></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="dashboard.js"></script>
+</body>
+</html>
