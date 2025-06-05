@@ -165,4 +165,10 @@ app.post('/api/order', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+// Export app for use in main server
+module.exports = app;
+
+// Only start server if this file is run directly
+if (require.main === module) {
+  app.listen(PORT, '0.0.0.0', () => console.log(`🚀 Server running at http://0.0.0.0:${PORT}`));
+}
