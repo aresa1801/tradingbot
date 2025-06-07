@@ -38,6 +38,7 @@ const allowedPairs = [
   'UNI/IDR', 'AAVE/IDR', 'TIA/IDR', 'WLD/IDR', 'PENDLE/IDR'
 ];
 
+// API for connecting to the exchange
 app.post('/api/connect', async (req, res) => {
   const { exchange, apiKey, secretKey } = req.body;
   try {
@@ -56,7 +57,7 @@ app.post('/api/connect', async (req, res) => {
     setTimeout(() => {
       if (mongoose.connection.readyState === 1) {
         scanAndAutoTrade();
-        setInterval(scanAndAutoTrade, 10 * 60 * 1000);
+        setInterval(scanAndAutoTrade, 10 * 60 * 1000);  // scan every 10 minutes
       }
     }, 1000);
   } catch (err) {
@@ -64,15 +65,18 @@ app.post('/api/connect', async (req, res) => {
   }
 });
 
+// Function to scan and trade
 async function scanAndAutoTrade() {
   if (!userExchange || !botRunning) return;
+
   console.log("📡 Scanning with full indicators...");
   for (const symbol of allowedPairs) {
     try {
-      await new Promise(r => setTimeout(r, 30000));
-      const ohlcv = await userExchange.fetchOHLCV(symbol, '5m');
+      await new Promise(r => setTimeout(r, 30000)); // Throttle requests every 30 seconds
+      const ohlcv = await userExchange.fetchOHLCV(symbol, '5m');  // 5-minute candlesticks
       const closes = ohlcv.map(c => c[4]);
 
+      // Calculate indicators
       const rsi = ti.RSI.calculate({ values: closes, period: 14 }).at(-1);
       const ema = ti.EMA.calculate({ values: closes, period: 21 }).at(-1);
       const macd = ti.MACD.calculate({
@@ -89,6 +93,9 @@ async function scanAndAutoTrade() {
         values: closes
       }).at(-1);
 
+      // Log the indicators for debugging
+      console.log(`RSI: ${rsi.toFixed(2)}, MACD: ${macd.MACD.toFixed(2)}, EMA: ${ema.toFixed(2)}, BB Lower: ${bb.lower.toFixed(2)}, BB Upper: ${bb.upper.toFixed(2)}`);
+
       const price = closes.at(-1);
       const belowBB = price < bb.lower;
       const aboveBB = price > bb.upper;
@@ -98,10 +105,12 @@ async function scanAndAutoTrade() {
                   : (rsi > 55 && isMACDSell && price < ema && aboveBB) ? 'SELL'
                   : null;
 
+      // If a signal is found, execute the trade
       if (side) {
-        const amount = 100_000 / price;
+        const amount = 100_000 / price;  // Example trade amount
         const order = await userExchange.createOrder(symbol, 'market', side.toLowerCase(), amount);
 
+        // Save the trade to the database
         await Trade.create({
           symbol, side, price,
           amount, signal: 'AUTO-AI',
@@ -118,6 +127,7 @@ async function scanAndAutoTrade() {
   }
 }
 
+// Start and stop bot endpoints
 app.post('/api/bot/start', (req, res) => {
   botRunning = true;
   res.json({ success: true });
@@ -128,38 +138,25 @@ app.post('/api/bot/stop', (req, res) => {
 });
 app.get('/api/bot/status', (req, res) => res.json({ running: botRunning }));
 
+// API for fetching balance (Ensuring it syncs with Indodax)
+app.get('/api/balance', async (req, res) => {
+  try {
+    const balance = await userExchange.fetchBalance();  // Fetch balance from the exchange
+    console.log("Fetched Balance:", balance);  // Log the entire balance object for debugging
+
+    const currency = userExchange.id === 'indodax' ? 'IDR' : 'USDT';
+    res.json({ balance: balance.total[currency] || 0 });  // Send balance in the correct currency (IDR or USDT)
+  } catch (err) {
+    console.error("Error fetching balance:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API for fetching trades
 app.get('/api/trades', async (req, res) => {
   try {
     const trades = await Trade.find().sort({ timestamp: -1 }).limit(50);
     res.json(trades);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('/api/balance', async (req, res) => {
-  try {
-    const balance = await userExchange.fetchBalance();
-    const currency = userExchange.id === 'indodax' ? 'IDR' : 'USDT';
-    res.json({ balance: balance.total[currency] || 0 });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.post('/api/order', async (req, res) => {
-  const { symbol, side, amount } = req.body;
-  try {
-    const order = await userExchange.createOrder(symbol, 'market', side.toLowerCase(), amount);
-    const price = order.price || (await userExchange.fetchTicker(symbol)).last;
-    await Trade.create({
-      symbol, side: side.toUpperCase(), price, amount,
-      timestamp: new Date(),
-      signal: 'MANUAL',
-      profit: 0,
-      status: 'executed'
-    });
-    res.json({ success: true, order });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -3,6 +3,7 @@
 let exchangeCredentials = JSON.parse(localStorage.getItem('credentials')) || null;
 let currentTab = 'executed';
 
+// Fungsi untuk switch tab antara Executed dan Signal Only
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -11,6 +12,7 @@ function switchTab(tab) {
   loadTrades();
 }
 
+// Fungsi untuk set header tabel berdasarkan tab yang dipilih
 function setTradeTableHeader() {
   const header = document.getElementById('trade-table-header');
   header.innerHTML = currentTab === 'signal-only' ? `
@@ -20,6 +22,7 @@ function setTradeTableHeader() {
   `;
 }
 
+// Fungsi untuk load saldo dari API
 async function loadBalance() {
   try {
     const res = await fetch('/api/balance');
@@ -30,6 +33,7 @@ async function loadBalance() {
   }
 }
 
+// Fungsi untuk load trades dari API dan menampilkan pada tabel
 async function loadTrades() {
   try {
     const res = await fetch('/api/trades');
@@ -64,6 +68,7 @@ async function loadTrades() {
   }
 }
 
+// Fungsi untuk logout
 document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('credentials');
   exchangeCredentials = null;
@@ -71,6 +76,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   alert('🔓 Logged out.');
 });
 
+// Fungsi untuk connect ke exchange menggunakan API Key dan Secret
 const form = document.getElementById('credentials-form');
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -108,6 +114,7 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
+// Auto-check if credentials exist in localStorage and try to reconnect
 if (exchangeCredentials) {
   fetch('/api/connect', {
     method: 'POST',
